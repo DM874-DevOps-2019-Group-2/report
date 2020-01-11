@@ -1,0 +1,84 @@
+\documentclass[a4paper]{article}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{graphicx}
+\usepackage{blindtext}
+\usepackage{dirtytalk}
+\usepackage[english]{babel}
+\usepackage{comment}
+
+\renewcommand{\tt}{\texttt}
+%\newcommand{\ctt}{#1}{\begin{center}\texttt{#1}\end{center}}
+
+\title{Report \\ Group 2}
+
+\date{January 2020}
+
+\definecolor{dkgreen}{rgb}{0,0.45,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.30,0,0.30}
+
+% Default settings for code listings
+% Default settings for code listings
+\lstset{frame=tb,
+  language=Go,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=left,
+  numberstyle=\footnotesize,
+  keywordstyle=\color{dkgreen}\bfseries,
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  frame=single,
+  breaklines=true,
+  breakatwhitespace=false
+  tabsize=1
+}
+
+\begin{document}
+
+\begin{titlepage}
+    \begin{center}
+        \vspace*{-2cm}\hspace*{1cm}asdf
+ 
+        \vspace{2.5cm}
+
+
+        {\let\newpage\relax\maketitle}
+        \thispagestyle{empty}
+
+        \vspace{0.8cm}
+
+        \begin{minipage}{.8\textwidth}
+        \begin{abstract}
+            Report text
+        \end{abstract}
+        \end{minipage}
+
+    \end{center}
+\end{titlepage}
+
+
+\newpage
+
+% https://tex.stackexchange.com/a/291312
+\setcounter{tocdepth}{2}
+\tableofcontents
+\newpage
+
+\begin{comment}
+\begin{minted}[xleftmargin=20pt,linenos,frame=single]{KITTY}
+\end{minted}
+\end{comment}
+
+\input{introduction.tex}
+
+\clearpage
+
+\newpage
+
+
+\end{document}
