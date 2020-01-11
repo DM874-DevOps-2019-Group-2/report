@@ -1,6 +1,8 @@
 % 1 - Introduction. This section gives an overview of the motivations and results of what you have done. Describe the challenge that you want to address, motivating why it is relevant.
 
 \section{Introduction}\label{sec:introduction}
-The purpose of this project has been to develop a chat application that allows its users to automate in- and outbound messages through scripts written in the service oriented programming language, Jolie.
+The purpose of this project has been to develop a chat application that allows its users to automate in- and outbound messages,  through user uploaded scripts written in the service oriented programming language, Jolie, while maintaining security.
 
-The underlying infrastructure of the application itself has been built as a micro-service architecture with the goal of affording greater atonomy and agility for developers working on focused aspects of the application.
+The underlying infrastructure of the application itself has been built as a micro-service architecture with the goal of affording developers greater atonomy and agility in the limited scope that they are responsible for.
+
+The choice of a micro-service architecture also helps another key goal, namely that of good horizontal scalability; we have utilized the venerable container orchestration framework, Kubernetes to facilitate this. Every service is containerized using Docker, and managed as pods in Kubernetes.
