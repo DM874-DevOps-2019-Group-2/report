@@ -144,7 +144,9 @@ All non-infrastructure services have both Continuous Integration and Continuous 
 This is achieved through TravisCI, which we connected directly with each github repository. 
 TravisCI runs builds on their own hardward free of charge for open-source projects, which is ideal for our use-case as the limited amount of sensitive information is easliy secured with encrypted secrets either directly in TravisCI, or in Kubernetes.
 
-Travis is configured for each repository through \texttt{.travis.yml} files similar to below:
+\medskip
+
+Travis is configured for each repository through \texttt{.travis.yml} files similar to following.
 
 \begin{lstlisting}[language=yaml]
     language: minimal
@@ -173,7 +175,9 @@ Travis is configured for each repository through \texttt{.travis.yml} files simi
       - secure: #<base64 of encrypted Kubernetes token>
 \end{lstlisting}
 
-The docker image \texttt{DM874/deploy} simply runs a \texttt{kubectl} command to update the kubernetes statefulset for the appropriate service, after which kubernetes smartly replaces the active pods by rolling update.
+The travis language \texttt{minimal} allows us to run the build process on a minimal linux installation, and \texttt{services: docker} includes docker in the image, which we use for building and publishing all of our services.
+
+The docker image \texttt{dm874/deploy} simply runs a \texttt{kubectl} command to update the kubernetes statefulset for the appropriate service, after which kubernetes smartly replaces the active pods by rolling update.
 Since all of our services run in Docker, critical tests should run as a part of the docker build process.
 This greatly simplifies the deployment process, as each travis stage remembers nothing from the previous. 
 This forgetting of previous stages also means that we have to build and publish the service in the same stage. We use the official docker hub to publish our images, which means we have to be careful not to leak any sensitive information during the build process.
