@@ -82,7 +82,12 @@ Additionally, a user can define a Jolie program to run on outgoing messages, all
 
 \medskip
 
-All user-defined programs are stored in a Google Cloud Storage bucket, providing high availability, and simple integration in Golang.
+All user-defined programs are stored in a Google Cloud Storage (GCS) bucket, providing high availability, and simple integration in Golang.
+
+The service consumes from two different Kafka topics, \texttt{jolie\_exec\_consumer\_topic} for regular messages, and \texttt{jolie\_exec\_config\_topic} for registration / deregistration of user programs.
+The control messages from the latter topic are used to maintain a PostgreSQL Database of which users currently have active programs for incoming and/or outgoing messages.
+Currently, the webserver is responsible for uploading user programs to GCS, and informing the jolie-exec service of program availability.
+
 
 For further details of implementing the Jolie program, look at the files \texttt{README.md} and the folder \texttt{examples/} of the jolie-exec repository available on GitHub\footnote{\url{https://github.com/DM874-DevOps-2019-Group-2/DM874-jolie-exec}}.
 
