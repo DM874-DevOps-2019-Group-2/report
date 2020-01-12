@@ -137,3 +137,66 @@ We have used public Grafana dashboards for Kafka and Kubernetes monitoring:\\
 \includegraphics[scale=0.133]{grafana.png}\\
 And Loki is purely log aggregation:\\
 \includegraphics[scale=0.133]{loki.png}\\
+
+
+\subsection{Continuous Integration and Deployment}
+All non-infrastructure services have both Continuous Integration and Continuous Deployment. 
+This is achieved through TravisCI, which we connected directly with each github repository. 
+TravisCI runs builds on their own hardward free of charge for open-source projects, which is ideal for our use-case as the limited amount of sensitive information is easliy secured with encrypted secrets either directly in TravisCI, or in Kubernetes.
+
+\medskip
+
+Travis is configured for each repository through \texttt{.travis.yml} files similar to following.
+
+\begin{lstlisting}[language=yaml]
+    language: minimal
+    services:
+    - docker
+    before_install:
+    - docker pull dm874/deploy
+    stages:
+    - build-publish
+    - deploy-migrations
+    - deploy-app
+    jobs:
+      include:
+      - stage: build-publish
+        script: docker build -t jolie-exec . && sh deployment/publish_app.sh
+      - stage: build-publish
+        script: docker build -t migrations migrations/ && sh deployment/publish_migrations.sh
+      - stage: deploy-migrations
+        script: sh deployment/deploy_migrations.sh
+      - stage: deploy-app
+        script: sh deployment/deploy_app.sh
+    env:
+      global:
+      - secure: #<base64 of encrypted docker username>
+      - secure: #<base64 of encrypted docker password>
+      - secure: #<base64 of encrypted Kubernetes token>
+\end{lstlisting}
+
+The travis language \texttt{minimal} allows us to run the build process on a minimal linux installation, and \texttt{services: docker} includes docker in the image, which we use for building and publishing all of our services.
+
+The docker image \texttt{dm874/deploy} simply runs a \texttt{kubectl} command to update the kubernetes statefulset for the appropriate service, after which kubernetes smartly replaces the active pods by rolling update.
+Since all of our services run in Docker, critical tests should run as a part of the docker build process.
+This greatly simplifies the deployment process, as each travis stage remembers nothing from the previous. 
+This forgetting of previous stages also means that we have to build and publish the service in the same stage. We use the official docker hub to publish our images, which means we have to be careful not to leak any sensitive information during the build process.
+To avoid leaking sensitive information during docker builds, all sensitive information is taken as environment variables at runtime, and then processed by shellscripts as part of the docker directive \texttt{CMD} eg. \lstinline{CMD ["sh", "-c", "./handle_secret_stuff.sh && ./main"]}.
+
+Some services use database access, and should provide database migration information to ensure database consistency between service versions, in this project, we use \textit{FlyWay}, which makes the process as simple as writing the migrations as a .sql file with the changes, and a time+date of the change.
+
+\subsection{Migrations}
+For migrations we chose to go with flyway migrations.
+The flyway migrations support many variations of migrations, where we have chosen to go with chronological immutable migrations.
+Immutable meaning once a migrations has been pushed to production, it must never be changed (note that production is not the same as pushing to VCS).
+Chronological meaning that the migrations are layered on top of eachother, migration 1 is run first, then 2 and so on...
+
+We run migrations in production once a service is deployed, as a docker container.
+When a container with migrations is built, a docker container that represents the migrations nessecary to run the container is built along side.
+This is done for various reasons, such as the possibility to have a docker container saved for re-iteration purposes if it fails to run.
+
+\subsection{VCS}
+For VCS, we have chosen the traditional Git + GitHub combination.
+This is a very proven piece of software and very widely used, therefore we chose to use it for the project.
+There are other alternatives such as GitLab, but we did not need the extra features GitLab offered with the many GitOps solutions.
+
