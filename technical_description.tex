@@ -52,8 +52,40 @@ The auto reply service provides users with a simple alternative to writing Jolie
 The router service is responsible for routing messages to the correct services, eg the one managing the websocket for the recipient user.
 The router service simply makes a lookup in redis for the key of the self-registered managed websocket, and sends the message to the found web-servers.
 % static services
-\subsection{Static services}
 \subsection{Deployability}
+We have chosen to use kubernetes for this project to manage almost all of our deployability.
+One of the key points of kubernetes is that if your deployment configurations are written well, it handles all deployment oriented aspects.
+Kubernetes is an extension to containerization, and since containerization envisions the idea of easy deployments kubernetes really pushes it to the next level.
+
+All runtime aspects and configuration has deployability and scalability in mind, using many built-in parts of kubernetes.
+We have the flexibility to say here is a service and it's configuration (which is dynamically injected at runtime if changed), now run it.
 \subsection{Reusability}
+Reusability is employed on two different levels.
+One is the level that we re-use Kafka for every aspect of cross-service communication, meaning that kafka is the only pre-requisite to understand the communication model.
+
+On the other side, we have services with clear API definitions.
+These services can be chained in any order chosen, thus they are completely reusable if the message flow needs it.
 \subsection{Performance}
+Performance was a big part of our considerations, both in designing the system and the physical performance.
+One of the most important parts of performance is the ability to do scaling seamlessly.
+An instance of this is how we introduced a router service and a redis instance to remove the need to check all websocket managers if they managed a connection to whatever user was receiving a message.
+
+All services are completely stateless and scalable except the websocket manager (webserver) instance, since it needs to do some rebalancing if a downscale must happen.
+All services are also written in high performance asynchronous languages, which include Go and Scala.
+
+The idea of introducing kafka has also been for performance aspects, since kafka has an obscene throughput (at least 100k req/sec without message bulking).
 \subsection{Fault tolerance}
+Since we have chosen to use Kafka for this project, we basically get fault tolerance for free.
+Kafka is fully distributed and might be one of the most fault tolerant pieces of software out there.
+It uses >2 instances of apache zookeeper, a distributed store (basically a filesystem structure) to manage the Kafka metadata.
+Kafka has the ability to have multiple brokers (brokers just means instances) crash and still go on as if nothing has happened.
+It uses leader election and built-in heartbeat methods which also the producers and consumers know of when connecting, and has automatic load balancing through broker rebalancing.
+
+As stated earlier all services are completely stateless (again, escept the websocket manager), so it compliments Kafka to keep track of the messages, since Kafka is more of a log store than a traditional pub-sub.
+\subsection{Monitoring}
+For monitoring the system we have chosen to go the opensource, modern and standardized way with Prometheus, Grafana and Loki.
+These three are an equivalent of the ELK stack, but seem to have much less resource requirements and be less of a pain to maintain.
+We have used public Grafana dashboards for Kafka and Kubernetes monitoring:\\
+\includegraphics[scale=0.133]{grafana.png}\\
+And Loki is purely log aggregation:\\
+\includegraphics[scale=0.133]{loki.png}\\
