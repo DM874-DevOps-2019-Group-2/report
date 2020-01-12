@@ -56,8 +56,10 @@ The service is written in the Go programming language, which lends itself well t
 	\item It is modern enough to have many built-in facilities useful for micro service development, like easy JSON encoding and decoding.
 	\item It is a compiled language which means the service will require fewer hardware resources for the same performance.
 	\item It is a strongly typed language which helps catch many bugs during compilation.
-	\item Since it is developed by Google who themselves use a microservice architecture for many of their services, there exists many tools and resources for containerizing go applications and deploying them with Kubernetes which also happens to be by Google.
+	\item Since it is developed by Google who themselves promote using a microservice architecture\cite{googlePromoteMicroservices}, there exists many tools and resources for containerizing go applications and deploying them with Kubernetes which also happens to be by Google.
 \end{itemize}
+
+State related to the auto reply service is kept in a dedicated PostgreSQL database, seperate from the service itself; this makes the service easier to scale horizontally.\cite{xenonStateless}
 
 \subsubsection{Jolie exec}
 \subsubsection{Router}
