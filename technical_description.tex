@@ -39,7 +39,7 @@ This section covers the responsibilities and design choices of the different mic
 This service has 5 simple but important objectives.
 \begin{enumerate}
     \item To serve the static single page React application.
-    \item To handle user websockets through the kubernetes ingress \& insert itself as the manager of a user websocket.
+    \item To handle user websockets through the Kubernetes ingress \& insert itself as the manager of a user websocket.
     \item To check authentication when a user makes a request.
     \item To "bootstrap" a message, by inserting into one of these event sourcing models (see the JSON structure in above).
     \item To route messages back to the recipient user websockets.
@@ -61,18 +61,23 @@ The service is written in the Go programming language, which lends itself well t
 
 State related to the auto reply service is kept in a dedicated PostgreSQL database, seperate from the service itself; this makes the service easier to scale horizontally.\cite{xenonStateless}
 
+A few unit tests have been written which have to pass during the build step of the deployment pipeline. This helps catch semantic bugs in key parts of the service.
+
+Finally, like all the services, the auto reply service is containerized using Docker and managed by Kubernetes.
+
 \subsubsection{Jolie exec}
 \subsubsection{Router}
 The router service is responsible for routing messages to the correct services, eg the one managing the websocket for the recipient user.
 The router service simply makes a lookup in redis for the key of the self-registered managed websocket, and sends the message to the found web-servers.
 % static services
 \subsection{Deployability}
-We have chosen to use kubernetes for this project to manage almost all of our deployability.
-One of the key points of kubernetes is that if your deployment configurations are written well, it handles all deployment oriented aspects.
-Kubernetes is an extension to containerization, and since containerization envisions the idea of easy deployments kubernetes really pushes it to the next level.
+We have chosen to use Kubernetes to manage almost all of our deployability for this project.
+One of the key advantages of Kubernetes is that if your deployment configurations are written well, it handles all deployment oriented aspects.
+Kubernetes is an extension to containerization, and since containerization envisions the idea of easy deployments, Kubernetes really pushes it to the next level.
 
-All runtime aspects and configuration has deployability and scalability in mind, using many built-in parts of kubernetes.
-We have the flexibility to say here is a service and it's configuration (which is dynamically injected at runtime if changed), now run it.
+All runtime aspects and configuration have deployability and scalability in mind, using many built-in parts of Kubernetes.
+We have the flexibility to say: here is a service and its configuration (which is dynamically injected at runtime if changed), now run it.
+
 \subsection{Reusability}
 Reusability is employed on two different levels.
 One is the level that we re-use Kafka for every aspect of cross-service communication, meaning that kafka is the only pre-requisite to understand the communication model.
