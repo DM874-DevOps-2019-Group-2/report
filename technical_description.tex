@@ -33,6 +33,8 @@ This structure contains any data about a message that a service would need to kn
 \end{enumerate}
 
 \subsection{Microservices}
+This section covers the responsibilities and design choices of the different microservices that comprise the chat application.
+
 \subsubsection{Webserver (website backend)}
 This service has 5 simple but important objectives.
 \begin{enumerate}
@@ -44,8 +46,20 @@ This service has 5 simple but important objectives.
 \end{enumerate}
 The service is written in scala and is independently scalable, has no state, storage or any stateful requirements.
 It is fault tolerant and secure through JWT using HMAC256 symmetric private key encryption.
+
 \subsubsection{Auto reply}
-The auto reply service provides users with a simple alternative to writing Jolie scripts to automate replying to messages. It works like how auto reply does in most e-mail clients; letting users write a static message that will be sent to everyone trying to message them. The message can be toggled on or off in the settings of the chat application.
+The auto reply service is an internal (to the cluster) service responsible for providing users with a simpler alternative to writing Jolie scripts to automate replying to messages. The feature works like how auto reply does in most e-mail clients; letting users write a static message that will be sent to everyone trying to message them. The message can be toggled on or off in the settings of the chat application.
+
+The service is written in the Go programming language, which lends itself well to microservice development for a few reasons:
+
+\begin{itemize}
+	\item It is modern enough to have many built-in facilities useful for micro service development, like easy JSON encoding and decoding.
+	\item It is a compiled language which means the service will require fewer hardware resources for the same performance.
+	\item It is a strongly typed language which helps catch many bugs during compilation.
+	\item Since it is developed by Google who themselves promote using a microservice architecture\cite{googlePromoteMicroservices}, there exists many tools and resources for containerizing go applications and deploying them with Kubernetes which also happens to be by Google.
+\end{itemize}
+
+State related to the auto reply service is kept in a dedicated PostgreSQL database, seperate from the service itself; this makes the service easier to scale horizontally.\cite{xenonStateless}
 
 \subsubsection{Jolie exec}
 The \texttt{Jolie-exec} service is responsible for running user-defined \textit{Jolielang} programs on incoming / outgoing messages. 
