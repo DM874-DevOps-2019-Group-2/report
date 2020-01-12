@@ -8,7 +8,7 @@ In our project we have used Docker for this.
 \subsection{REST}
 REST is an API spec, that is built ontop of HTTP. We use REST for interacting with our service from the outside, since it is almost an ISO standard for how to expose your web-services.
 \subsection{Kubernetes}
-Kubernetes is a self-healing, fast, fault-tolerant, and pluggable spec, for container orchestration and networking abstraction at scale.
+Kubernetes is a self-healing, fast, fault-tolerant, and pluggable spec, for container orchestration and networking abstraction at scale. \cite{kubernetesDocs}
 \subsubsection{Self-healing}
 In the context of kubernetes, self-healing means that the kubernets master actively makes sure that containers are healthy, if not they are restarted (usually).
 \subsubsection{Fast}
@@ -23,20 +23,20 @@ Usually people know this by automatic scheduling and resource management for con
 Imagine having 3 virtual machines and 50 containers, kubernetes automatically handles all the deploying and networking for you.
 \subsection{Prometheus}
 Prometheus is a applications monitoring spec, like JVM memory details, Go garbage collector details and much much more.
-It is also a server software, that can pull from REST endpoints (usually /prometheus), and then exposes another api with all the collected data that can be consumed by eg Grafana.
+It is also a server software, that can pull from REST endpoints (usually /prometheus), and then exposes another api with all the collected data that can be consumed by eg Grafana.\cite{prometheusDocs}
 \subsection{Grafana}
-Grafana is a visualization tool, it can be connected to various sources (such as prometheus and loki), for data visualization.
+Grafana is a visualization tool, it can be connected to various sources (such as prometheus and loki), for data visualization.\cite{grafanaAbout}
 \subsection{Loki}
 Loki is a brand new software from the grafana team, that harvests logs stores them in cassandra and tokenizes them for extremely fast lookup.
-Loki exposes an endpoint that adheres to the prometheus spec, so it is also extremely pluggable.
+Loki exposes an endpoint that adheres to the prometheus spec, so it is also extremely pluggable.\cite{lokiAbout}
 \subsection{Redis}
 Redis is an extremely high-performance in-memory simple key-value store but extensible through an plugin environment.
-Redis is used often for query caching and session management.
+Redis is used often for query caching and session management.\cite{redisAbout}
 \subsection{Postgres}
-Postgres is a state of the art high performance RDBMS.
+Postgres is a state of the art high performance RDBMS.\cite{postgresAbout}
 \subsection{Kafka}
 Kafka is a fully distributed, pub-sub like messaging system that employs log techniques instead of the ordinary ack-pop of pub-sub systems.
-Kafka is the most widely used modern messaging system of it's category of pub-sub systems.
+Kafka is the most widely used modern messaging system of it's category of pub-sub systems.\cite{kafkaAbout}
 \subsection{JSON}
 JSON is a data modelling language, it is simple and easy to read.
 \subsection{JWT}
