@@ -16,9 +16,21 @@ On the other hand, while most modern languages have Kafka clients readily availa
 The primary argument one could make for REST over Kafka, is the simplicity of providing API access to the individual services, however this can be mitigated by using an API Gateway which translates REST requests to Kafka messages and vice-versa, which is considered good practice for microservice systems either way.
 
 % -- Jolie exec implemented in go pro/con
-\vspace*{11pt}
+\bigskip
 
 The use of Kafka eliminated \textit{Jolielang} as an option for implementing microservices in the system easily. However, as per verbal agreement, a user should be able to write Jolie code snippets to run on their messages.
-Instead, the \texttt{Jolie-exec} service is implemented in \textit{golang}, which in many ways is quite similar to an extended version of \texttt{C}.
+Instead, the \texttt{Jolie-exec} service is implemented in \textit{golang}, which in many ways is quite similar to an extended version of \texttt{C}. 
+
+As we decided to run the service on an ubuntu docker image, ubuntu group management is used along iptables to provide some level of security when running the user code snippets, and we are able to limit the runtime and memory usage of each snippet, something which seems unavailable in pure Jolie.
+
+Since Jolie runs on the Java Virtual Machine, a rather large memory overhead is present for each snippet running, which brings us to the primary drawback of this approach.
+Jolie would not run if the memory was limited to anything below 6 GiB, which is a ridiculous amount of memory for simple message processing.
+It is possible that the could be avoided with some configuration, however, we did not find a nice solution.
+
 % -- alternatives to jolie (resource cost wise)
 
+\bigskip
+
+If the application was to be used in production, the first obvious change would be discontinuation of Jolie snippets, migrating to a lower-overhead interpreted language such as \textit{Python} or \textit{Lua}.
+If we assume a python runtime memory overhead of around 32MiB (testing this locally shows \textasciitilde 16MiB in python 2.7.17), we could fairly safely (assuming no file transfers through regular messages) limit the snippet's available memory to 32Mib, for a total of 64MiB per instance. 
+With each user snippet instance being limited to 64MiB memory, \textasciitilde 96 times more user snippets could run simultaneously, greatly reducing infrastructure costs.
