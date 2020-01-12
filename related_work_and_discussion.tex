@@ -2,6 +2,23 @@
 
 \section{Related Work and Discussion}\label{sec:relatedWorkAndDiscussion}
 
--- related work limited as the project was about using already well known technologies together
--- alternatives to jolie (resource cost wise)
--- kafka vs REST
+% -- related work limited as the project was about using already well known technologies together
+
+% -- kafka vs REST
+The first intersting point of discussion is the choice of utilizing \textit{Apache Kafka} for inter-service communication, rather than the commonly used REST architechture. 
+There are multiple reasons as to why we ended up using Kafka. 
+
+Firstly, Kafka is very efficient, with the ability to saturate a 1GiB connection ({\huge \color{red} TODO:} cite https://engineering.linkedin.com/kafka/benchmarking-apache-kafka-2-million-writes-second-three-cheap-machines), even with small messages which are expected in a messaging/chat application.
+
+Another positive aspect of using Kafka is the rather limited amount of boiler plate code required in each service to use the communication medium. Since REST runs on top of HTTP, using REST would require each service to run a webserver of its own, which, depending on the language, could be cumbersome.
+On the other hand, while most modern languages have Kafka clients readily available, it is not all. As such, the programmer might be limited in choice of language.
+
+The primary argument one could make for REST over Kafka, is the simplicity of providing API access to the individual services, however this can be mitigated by using an API Gateway which translates REST requests to Kafka messages and vice-versa, which is considered good practice for microservice systems either way.
+
+% -- Jolie exec implemented in go pro/con
+\newline 
+
+The use of Kafka eliminated \textit{Jolielang} as an option for implementing microservices in the system easily. However, as per verbal agreement, a user should be able to write Jolie code snippets to run on their messages.
+Instead, the \texttt{Jolie-exec} service is implemented in \textit{golang}, which in many ways is quite similar to an extended version of \texttt{C}.
+% -- alternatives to jolie (resource cost wise)
+
