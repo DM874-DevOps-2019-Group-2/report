@@ -185,3 +185,18 @@ To avoid leaking sensitive information during docker builds, all sensitive infor
 
 Some services use database access, and should provide database migration information to ensure database consistency between service versions, in this project, we use \textit{FlyWay}, which makes the process as simple as writing the migrations as a .sql file with the changes, and a time+date of the change.
 
+\subsection{Migrations}
+For migrations we chose to go with flyway migrations.
+The flyway migrations support many variations of migrations, where we have chosen to go with chronological immutable migrations.
+Immutable meaning once a migrations has been pushed to production, it must never be changed (note that production is not the same as pushing to VCS).
+Chronological meaning that the migrations are layered on top of eachother, migration 1 is run first, then 2 and so on...
+
+We run migrations in production once a service is deployed, as a docker container.
+When a container with migrations is built, a docker container that represents the migrations nessecary to run the container is built along side.
+This is done for various reasons, such as the possibility to have a docker container saved for re-iteration purposes if it fails to run.
+
+\subsection{VCS}
+For VCS, we have chosen the traditional Git + GitHub combination.
+This is a very proven piece of software and very widely used, therefore we chose to use it for the project.
+There are other alternatives such as GitLab, but we did not need the extra features GitLab offered with the many GitOps solutions.
+
