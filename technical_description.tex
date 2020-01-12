@@ -8,7 +8,7 @@ First the spec will explained and then every aspect into more detail.
 A flowchart of the stack can be seen below:\\
 \includegraphics[scale=0.38]{stack.png}
 \\
-In the spec we use an event sourcing like technique.
+In the spec we use an event sourcing like technique.\cite{fowlerEventSourcing}
 This includes a stateful data-structure that every service knows the structure of.
 This structure contains any data about a message that a service would need to know, as well as the sender user.\\
 \begin{lstlisting}
@@ -45,6 +45,8 @@ This service has 5 simple but important objectives.
 The service is written in scala and is independently scalable, has no state, storage or any stateful requirements.
 It is fault tolerant and secure through JWT using HMAC256 symmetric private key encryption.
 \subsubsection{Auto reply}
+The auto reply service provides users with a simple alternative to writing Jolie scripts to automate replying to messages. It works like how auto reply does in most e-mail clients; letting users write a static message that will be sent to everyone trying to message them. The message can be toggled on or off in the settings of the chat application.
+
 \subsubsection{Jolie exec}
 \subsubsection{Router}
 The router service is responsible for routing messages to the correct services, eg the one managing the websocket for the recipient user.
